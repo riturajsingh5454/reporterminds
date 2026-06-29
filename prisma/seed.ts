@@ -269,9 +269,9 @@ async function main() {
     },
   });
   const videoSeeds = [
-    { youtubeId: "dQw4w9WgXcQ", title: "How to Build a News Story From Scratch" },
-    { youtubeId: "dQw4w9WgXcQ2", title: "Interviewing Techniques That Work" },
-    { youtubeId: "dQw4w9WgXcQ3", title: "Climate Reporting in the Field" },
+    { youtubeId: "a-NLDHyg0Ew", title: "How to Build a News Story From Scratch" },
+    { youtubeId: "s6sP0UJJHgs", title: "Interviewing Techniques That Work" },
+    { youtubeId: "dQw4w9WgXcQ", title: "Climate Reporting in the Field" },
   ];
   for (const v of videoSeeds) {
     await prisma.video.upsert({

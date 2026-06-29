@@ -7,7 +7,6 @@ import { AnimatedCounter } from "@/components/shared/animated-counter";
 import { VideoCard } from "@/components/youtube/video-card";
 import { Button } from "@/components/ui/button";
 import { YoutubeIcon } from "@/components/shared/social-icons";
-
 export const metadata: Metadata = { title: "YouTube Hub" };
 export const revalidate = 300;
 
@@ -33,8 +32,19 @@ export default async function YoutubePage() {
             title="YouTube Hub"
             description="Educational videos on journalism, climate science, and the craft of storytelling."
           />
-          <Button render={<a href="https://youtube.com" target="_blank" rel="noreferrer" />}>
-            <YoutubeIcon className="size-4" /> Subscribe
+
+          <Button
+            nativeButton={false}
+            render={
+              <a
+                href="https://youtube.com"
+                target="_blank"
+                rel="noreferrer"
+              />
+            }
+          >
+            <YoutubeIcon className="size-4" />
+            Subscribe
           </Button>
         </div>
 

@@ -28,6 +28,7 @@ export type DataTableColumn = {
   className?: string;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function DataTable<T extends { id: string; editHref?: string; [key: string]: any }>({
   rows,
   columns,

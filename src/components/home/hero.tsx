@@ -8,13 +8,17 @@ import { Button } from "@/components/ui/button";
 
 const roles = ["Journalist", "Author", "Professor", "Mentor", "Climate Communicator"];
 
-export function Hero({ tagline }: { tagline?: string | null }) {
+export function Hero({ tagline, heroMedia }: { tagline?: string | null; heroMedia?: string | null }) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => setIndex((i) => (i + 1) % roles.length), 2400);
     return () => clearInterval(interval);
   }, []);
+
+  const mediaUrl =
+    heroMedia ||
+    "https://reportersmind.com/wp-content/uploads/2025/06/WhatsApp-Image-2025-06-17-at-16.24.28-scaled.jpeg";
 
   return (
     <section className="relative flex min-h-[92vh] items-center overflow-hidden">
@@ -95,9 +99,11 @@ export function Hero({ tagline }: { tagline?: string | null }) {
           >
             <div className="from-primary/30 via-accent/30 absolute inset-0 rounded-[2rem] bg-gradient-to-br to-transparent blur-2xl" />
             <div className="glass relative h-full w-full overflow-hidden rounded-[2rem] border">
-              <div className="from-secondary to-background flex h-full w-full items-center justify-center bg-gradient-to-b">
-                <span className="font-display text-muted-foreground/50 text-7xl">RM</span>
-              </div>
+              <img
+                src={mediaUrl}
+                alt="ReportersMind Hero"
+                className="h-full w-full object-cover"
+              />
             </div>
           </motion.div>
         </div>

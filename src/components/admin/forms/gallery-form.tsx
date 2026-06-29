@@ -31,15 +31,36 @@ export function GalleryForm({ item, categories }: { item?: Gallery; categories: 
   };
 
   return (
-    <form action={action} className="space-y-6">
+    <form action={action} className="space-y-6" encType="multipart/form-data">
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Photo Details</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2 sm:col-span-2">
-            <Label htmlFor="imageUrl">Image URL</Label>
-            <Input id="imageUrl" name="imageUrl" defaultValue={item?.imageUrl} required />
+            <Label htmlFor="imageFile">Upload Photo</Label>
+            <Input
+              id="imageFile"
+              name="imageFile"
+              type="file"
+              accept="image/*"
+              required={!item}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file && file.size > 2 * 1024 * 1024) {
+                  toast.error("File size must not exceed 2MB");
+                  e.target.value = "";
+                }
+              }}
+            />
+            {item?.imageUrl && (
+              <p className="text-muted-foreground text-xs mt-1">
+                Current:{" "}
+                <a href={item.imageUrl} target="_blank" rel="noreferrer" className="underline">
+                  {item.imageUrl}
+                </a>
+              </p>
+            )}
           </div>
           <div className="space-y-2 sm:col-span-2">
             <Label htmlFor="caption">Caption</Label>

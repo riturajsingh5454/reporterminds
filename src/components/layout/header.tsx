@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Feather } from "lucide-react";
+import { Menu } from "lucide-react";
 import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
@@ -29,7 +29,11 @@ export function Header() {
     >
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
-          <Feather className="text-primary size-5" />
+          <img
+            src="https://reportersmind.com/wp-content/uploads/2022/12/cropped-cropped-Reporters-mind-favicon.jpg"
+            alt="ReportersMind Logo"
+            className="size-16 rounded object-cover"
+          />
           <span className="font-display text-lg tracking-tight">ReportersMind</span>
         </Link>
 

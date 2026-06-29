@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Feather } from "lucide-react";
 import { Container } from "@/components/shared/container";
 import { NewsletterForm } from "@/components/shared/newsletter-form";
 import { footerLinkGroups } from "@/lib/nav-links";
@@ -19,7 +18,11 @@ export function Footer() {
         <div className="grid gap-12 lg:grid-cols-[1.2fr_2fr_1.2fr]">
           <div>
             <Link href="/" className="flex items-center gap-2">
-              <Feather className="text-primary size-5" />
+              <img
+                src="https://reportersmind.com/wp-content/uploads/2022/12/cropped-cropped-Reporters-mind-favicon.jpg"
+                alt="ReportersMind Logo"
+                className="size-6 rounded object-cover"
+              />
               <span className="font-display text-lg tracking-tight">ReportersMind</span>
             </Link>
             <p className="text-muted-foreground mt-4 max-w-xs text-sm leading-relaxed">

@@ -90,7 +90,7 @@ export default async function HomePage() {
           url: process.env.NEXT_PUBLIC_SITE_URL,
         }}
       />
-      <Hero tagline={data.siteSettings?.tagline} />
+      <Hero tagline={data.siteSettings?.tagline} heroMedia={data.siteSettings?.heroMedia} />
       <StatsSection stats={data.stats} />
       <FeaturedBooks books={data.featuredBooks} />
       <LegacyTimeline events={data.timelineEvents} />

@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, X, ZoomIn } from "lucide-react";
-import { Dialog, DialogPortal, DialogOverlay, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogPortal, DialogOverlay } from "@/components/ui/dialog";
+import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 
 export type LightboxImage = { src: string; alt: string };
 
@@ -28,7 +29,7 @@ export function Lightbox({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogPortal>
           <DialogOverlay className="bg-black/90" />
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
+          <DialogPrimitive.Popup className="fixed inset-0 z-50 flex items-center justify-center p-6 outline-none">
             <div className="relative aspect-[4/3] w-full max-w-4xl">
               <Image
                 src={images[index]?.src ?? ""}
@@ -39,9 +40,12 @@ export function Lightbox({
               />
             </div>
 
-            <DialogClose className="absolute top-6 right-6 text-white/80 hover:text-white">
+            <DialogPrimitive.Close
+              className="absolute top-6 right-6 text-white/80 hover:text-white z-50 cursor-pointer p-2 rounded-full hover:bg-white/10 transition-colors"
+              aria-label="Close dialog"
+            >
               <X className="size-6" />
-            </DialogClose>
+            </DialogPrimitive.Close>
 
             {images.length > 1 ? (
               <>
@@ -63,7 +67,7 @@ export function Lightbox({
                 </button>
               </>
             ) : null}
-          </div>
+          </DialogPrimitive.Popup>
         </DialogPortal>
       </Dialog>
     </>
