@@ -4,14 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
     "@hookform/resolvers": "^5.4.0",
-    "@prisma/client": "6.19.3",
+    "@prisma/client": "^6.19.3",
     "@tanstack/react-query": "^5.101.1",
     "@tanstack/react-query-devtools": "^5.101.1",
     "@tiptap/extension-image": "^3.27.1",
