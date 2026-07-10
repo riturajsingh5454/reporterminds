@@ -26,13 +26,13 @@ export const footerLinkGroups = [
       { href: "/testimonials", label: "Testimonials" },
     ],
   },
-  {
-    title: "Connect",
-    links: [
-      { href: "/contact", label: "Contact" },
-      { href: "/contact?type=speaking", label: "Speaking Invitation" },
-      { href: "/contact?type=media", label: "Media Inquiry" },
-      { href: "/login", label: "Admin Login" },
-    ],
-  },
+  // {
+  //   title: "Connect",
+  //   links: [
+  //     { href: "/contact", label: "Contact" },
+  //     { href: "/contact?type=speaking", label: "Speaking Invitation" },
+  //     { href: "/contact?type=media", label: "Media Inquiry" },
+  //     { href: "/login", label: "Admin Login" },
+  //   ],
+  // },
 ] as const;
