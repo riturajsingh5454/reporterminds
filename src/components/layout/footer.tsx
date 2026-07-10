@@ -19,9 +19,9 @@ export function Footer() {
           <div>
             <Link href="/" className="flex items-center gap-2">
               <img
-                src="https://reportersmind.com/wp-content/uploads/2022/12/cropped-cropped-Reporters-mind-favicon.jpg"
+                src="/whitelogo.jpeg"
                 alt="ReportersMind Logo"
-                className="size-6 rounded object-cover"
+                className="size-10 rounded object-cover"
               />
               <span className="font-display text-lg tracking-tight">ReportersMind</span>
             </Link>

@@ -18,7 +18,7 @@ export function Hero({ tagline, heroMedia }: { tagline?: string | null; heroMedi
 
   const mediaUrl =
     heroMedia ||
-    "/hero image.jpeg";
+    "/heroimage.jpeg";
 
   return (
     <section className="relative flex min-h-[92vh] items-center overflow-hidden">

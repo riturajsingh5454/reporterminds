@@ -31,7 +31,7 @@ export function AdminSidebar({ userRole }: AdminSidebarProps) {
       <SidebarHeader>
         <Link href="/admin" className="flex items-center gap-2 px-2 py-1.5">
           <img
-            src="https://reportersmind.com/wp-content/uploads/2022/12/cropped-cropped-Reporters-mind-favicon.jpg"
+            src="/whitelogo.jpeg"
             alt="ReportersMind Logo"
             className="size-5 rounded object-cover shrink-0"
           />
