@@ -30,7 +30,7 @@ export function Header() {
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
           <img
-            src="https://reportersmind.com/wp-content/uploads/2022/12/cropped-cropped-Reporters-mind-favicon.jpg"
+            src="/whitelogo.jpeg"
             alt="ReportersMind Logo"
             className="size-16 rounded object-cover"
           />

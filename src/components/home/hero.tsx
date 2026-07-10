@@ -18,7 +18,7 @@ export function Hero({ tagline, heroMedia }: { tagline?: string | null; heroMedi
 
   const mediaUrl =
     heroMedia ||
-    "https://reportersmind.com/wp-content/uploads/2025/06/WhatsApp-Image-2025-06-17-at-16.24.28-scaled.jpeg";
+    "/hero image.jpeg";
 
   return (
     <section className="relative flex min-h-[92vh] items-center overflow-hidden">
