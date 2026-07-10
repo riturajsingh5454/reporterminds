@@ -19,15 +19,15 @@ export async function updateSiteSettings(formData: FormData): Promise<ActionResu
     youtubeChannelId: formData.get("youtubeChannelId") || undefined,
     analyticsId: formData.get("analyticsId") || undefined,
     maintenanceMode: formData.get("maintenanceMode") === "on",
-    twitter: formData.get("twitter") || undefined,
+
     linkedin: formData.get("linkedin") || undefined,
     youtube: formData.get("youtube") || undefined,
     instagram: formData.get("instagram") || undefined,
   });
   if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message };
 
-  const { twitter, linkedin, youtube, instagram, ...rest } = parsed.data;
-  const socialLinks = { twitter, linkedin, youtube, instagram };
+  const {  linkedin, youtube, instagram, ...rest } = parsed.data;
+  const socialLinks = { linkedin, youtube, instagram };
 
   const existing = await prisma.siteSettings.findFirst();
   if (existing) {

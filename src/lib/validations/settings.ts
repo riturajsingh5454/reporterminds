@@ -11,7 +11,6 @@ export const siteSettingsSchema = z.object({
   youtubeChannelId: z.string().trim().optional(),
   analyticsId: z.string().trim().optional(),
   maintenanceMode: z.coerce.boolean().optional(),
-  twitter: z.string().trim().optional(),
   linkedin: z.string().trim().optional(),
   youtube: z.string().trim().optional(),
   instagram: z.string().trim().optional(),

@@ -86,10 +86,7 @@ export function SettingsForm({ settings }: { settings: SiteSettings | null }) {
           <CardTitle className="text-base">Social Links</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="twitter">Twitter / X</Label>
-            <Input id="twitter" name="twitter" defaultValue={socialLinks.twitter ?? ""} />
-          </div>
+         
           <div className="space-y-2">
             <Label htmlFor="linkedin">LinkedIn</Label>
             <Input id="linkedin" name="linkedin" defaultValue={socialLinks.linkedin ?? ""} />

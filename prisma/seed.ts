@@ -13,7 +13,7 @@ async function main() {
         siteName: "ReportersMind",
         tagline: "Journalist. Author. Professor. Climate Communicator.",
         socialLinks: {
-          twitter: "https://twitter.com/reportersmind",
+      
           linkedin: "https://linkedin.com/in/reportersmind",
           youtube: "https://youtube.com/@reportersmind",
           instagram: "https://instagram.com/reportersmind",

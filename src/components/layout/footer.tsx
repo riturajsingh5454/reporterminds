@@ -2,13 +2,13 @@ import Link from "next/link";
 import { Container } from "@/components/shared/container";
 import { NewsletterForm } from "@/components/shared/newsletter-form";
 import { footerLinkGroups } from "@/lib/nav-links";
-import { TwitterXIcon, LinkedInIcon, YoutubeIcon, InstagramIcon } from "@/components/shared/social-icons";
+import { LinkedInIcon, YoutubeIcon, InstagramIcon } from "@/components/shared/social-icons";
 
 const socials = [
-  { href: "https://twitter.com", icon: TwitterXIcon, label: "Twitter" },
-  { href: "https://linkedin.com", icon: LinkedInIcon, label: "LinkedIn" },
-  { href: "https://youtube.com", icon: YoutubeIcon, label: "YouTube" },
-  { href: "https://instagram.com", icon: InstagramIcon, label: "Instagram" },
+
+  { href: "https://in.linkedin.com/in/dr-sanjay-johri", icon: LinkedInIcon, label: "LinkedIn" },
+  { href: "https://www.youtube.com/@SanjayMohanJohri/videos", icon: YoutubeIcon, label: "YouTube" },
+  { href: "https://www.instagram.com/sanjaymjohri/", icon: InstagramIcon, label: "Instagram" },
 ];
 
 export function Footer() {

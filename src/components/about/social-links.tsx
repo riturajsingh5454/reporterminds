@@ -1,9 +1,9 @@
 import { Container } from "@/components/shared/container";
 import { Reveal } from "@/components/shared/reveal";
-import { TwitterXIcon, LinkedInIcon, YoutubeIcon, InstagramIcon } from "@/components/shared/social-icons";
+import {  LinkedInIcon, YoutubeIcon, InstagramIcon } from "@/components/shared/social-icons";
 
 export type SocialLinksData = {
-  twitter?: string;
+
   linkedin?: string;
   youtube?: string;
   instagram?: string;
@@ -13,7 +13,7 @@ export function SocialLinks({ links }: { links: SocialLinksData | null }) {
   if (!links) return null;
 
   const items = [
-    { href: links.twitter, icon: TwitterXIcon, label: "Twitter" },
+  
     { href: links.linkedin, icon: LinkedInIcon, label: "LinkedIn" },
     { href: links.youtube, icon: YoutubeIcon, label: "YouTube" },
     { href: links.instagram, icon: InstagramIcon, label: "Instagram" },
