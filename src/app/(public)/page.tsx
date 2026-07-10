@@ -61,10 +61,10 @@ async function getHomeData() {
     siteSettings,
     stats: {
       yearsExperience: siteSettings?.yearsExperience ?? 20,
-      articlesPublished: articlesCount,
-      booksPublished: booksCount,
+      articlesPublished: siteSettings?.articlesPublished ?? articlesCount,
+      booksPublished: siteSettings?.booksPublished ?? booksCount,
       studentsMentored: siteSettings?.studentsMentored ?? 0,
-      videosCreated: videosCount,
+      videosCreated: siteSettings?.videosCreated ?? videosCount,
     },
     featuredBooks: featuredBooksRaw,
     timelineEvents,

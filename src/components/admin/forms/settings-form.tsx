@@ -71,6 +71,36 @@ export function SettingsForm({ settings }: { settings: SiteSettings | null }) {
             <Input id="studentsMentored" name="studentsMentored" type="number" defaultValue={settings?.studentsMentored ?? ""} />
           </div>
           <div className="space-y-2">
+            <Label htmlFor="articlesPublished">Published Articles</Label>
+            <Input
+              id="articlesPublished"
+              name="articlesPublished"
+              type="number"
+              placeholder="Auto-counted from published articles"
+              defaultValue={settings?.articlesPublished ?? ""}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="booksPublished">Books Published</Label>
+            <Input
+              id="booksPublished"
+              name="booksPublished"
+              type="number"
+              placeholder="Auto-counted from published books"
+              defaultValue={settings?.booksPublished ?? ""}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="videosCreated">Videos Created</Label>
+            <Input
+              id="videosCreated"
+              name="videosCreated"
+              type="number"
+              placeholder="Auto-counted from videos"
+              defaultValue={settings?.videosCreated ?? ""}
+            />
+          </div>
+          <div className="space-y-2">
             <Label htmlFor="analyticsId">Analytics ID</Label>
             <Input id="analyticsId" name="analyticsId" defaultValue={settings?.analyticsId ?? ""} />
           </div>

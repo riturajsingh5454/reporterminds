@@ -421,8 +421,11 @@ model SiteSettings {
   heroMedia        String?
   socialLinks      Json?
   contactEmail     String?
-  yearsExperience  Int?
-  studentsMentored Int?
+  yearsExperience   Int?
+  studentsMentored  Int?
+  articlesPublished Int?
+  booksPublished    Int?
+  videosCreated     Int?
   youtubeChannelId String?
   analyticsId      String?
   maintenanceMode  Boolean  @default(false)
