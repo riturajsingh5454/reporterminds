@@ -1,4 +1,5 @@
 export const primaryNavLinks = [
+  { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/books", label: "Books" },
   { href: "/blog", label: "Writing" },

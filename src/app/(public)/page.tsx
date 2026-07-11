@@ -54,7 +54,7 @@ async function getHomeData() {
       () => prisma.testimonial.findMany({ where: { isFeatured: true }, orderBy: { order: "asc" }, take: 6 }),
       [],
     ),
-    safeQuery(() => prisma.gallery.findMany({ orderBy: { order: "asc" }, take: 8 }), []),
+    safeQuery(() => prisma.gallery.findMany({ orderBy: { createdAt: "desc" }, take: 3, select: { id: true, imageUrl: true, caption: true, eventName: true, location: true } }), []),
   ]);
 
   return {
