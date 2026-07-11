@@ -23,12 +23,17 @@ function parseGalleryForm(formData: FormData, imageUrl: string) {
 
 export async function createGalleryItem(formData: FormData): Promise<ActionResult> {
   await requireRole("EDITOR");
-  
+
   const imageFile = formData.get("imageFile") as File | null;
   let imageUrl = "";
+  console.log("1212121")
   try {
     imageUrl = await saveUploadedFile(imageFile);
+    console.log("12122222")
+
   } catch (err) {
+    console.log("13323f23f44")
+
     const message = err instanceof Error ? err.message : "Failed to upload image";
     return { success: false, error: message };
   }

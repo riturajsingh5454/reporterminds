@@ -1,11 +1,10 @@
 "use server";
 
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
+import { prisma } from "@/lib/prisma";
 
 /**
- * Save an uploaded file to the public/uploads directory.
- * Returns the public URL path (e.g. "/uploads/17200000000-abc123.jpg").
+ * Save an uploaded file to MongoDB as base64.
+ * Returns the public URL path (e.g. "/api/uploads/abc123").
  *
  * @param file - The File object from FormData
  * @param existingUrl - Optional existing URL to fall back to (for updates)
@@ -31,16 +30,17 @@ export async function saveUploadedFile(file: File | null, existingUrl?: string):
 
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
+  const base64Data = buffer.toString("base64");
 
-  // Generate a unique filename
-  const fileExtension = file.name.split(".").pop() || "jpg";
-  const uniqueFilename = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExtension}`;
+  // Store in MongoDB
+  const upload = await prisma.upload.create({
+    data: {
+      filename: file.name,
+      mimeType: file.type,
+      size: file.size,
+      data: base64Data,
+    },
+  });
 
-  const uploadDir = join(process.cwd(), "public", "uploads");
-  await mkdir(uploadDir, { recursive: true });
-
-  const filePath = join(uploadDir, uniqueFilename);
-  await writeFile(filePath, buffer);
-
-  return `/uploads/${uniqueFilename}`;
+  return `/api/uploads/${upload.id}`;
 }

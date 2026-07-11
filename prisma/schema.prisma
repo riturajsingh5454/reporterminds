@@ -398,6 +398,21 @@ model Achievement {
 }
 
 // =========================================================================
+// FILE UPLOADS (stored in MongoDB)
+// =========================================================================
+
+model Upload {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  filename  String
+  mimeType  String
+  size      Int
+  data      String   // base64-encoded file data
+  createdAt DateTime @default(now())
+
+  @@map("uploads")
+}
+
+// =========================================================================
 // SEO / SITE SETTINGS / ANALYTICS
 // =========================================================================
 
