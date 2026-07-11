@@ -21,7 +21,7 @@ export function GalleryPreview({ items }: { items: GalleryPreviewItem[] }) {
     <section className="py-24">
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-6">
-          <SectionHeading eyebrow="Media Library" title="Moments Captured" description="A picture is worth a thousand words” as it captures emotions, tells stories, and conveys messages that words often cannot. Visuals transcend language barriers, evoking instant connections and deep understanding. This section will carry Clicks taken by me or from friends with due credit." />
+          <SectionHeading eyebrow="Media Library" title="Moments Captured" description={`"A picture is worth a thousand words" as it captures emotions, tells stories, and conveys messages that words often cannot. Visuals transcend language barriers, evoking instant connections and deep understanding. This section will carry Clicks taken by me or from friends with due credit.`} />
           <Button variant="outline" render={<Link href="/gallery" />}>
             Full Gallery <ArrowRight className="size-4" />
           </Button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,7 @@ import type { ActionResult } from "@/server/actions/books";
 export function GalleryForm({ item, categories }: { item?: Gallery; categories: GalleryCategory[] }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [hasFileError, setHasFileError] = useState(false);
 
   const action = (formData: FormData) => {
     startTransition(async () => {
@@ -47,9 +48,12 @@ export function GalleryForm({ item, categories }: { item?: Gallery; categories: 
               required={!item}
               onChange={(e) => {
                 const file = e.target.files?.[0];
-                if (file && file.size > 2 * 1024 * 1024) {
-                  toast.error("File size must not exceed 2MB");
+                if (file && file.size > 1 * 1024 * 1024) {
+                  toast.error("File size must not exceed 1MB");
+                  setHasFileError(true);
                   e.target.value = "";
+                } else {
+                  setHasFileError(false);
                 }
               }}
             />
@@ -104,7 +108,7 @@ export function GalleryForm({ item, categories }: { item?: Gallery; categories: 
         </CardContent>
       </Card>
 
-      <Button type="submit" size="lg" disabled={isPending}>
+      <Button type="submit" size="lg" disabled={isPending || hasFileError}>
         {isPending ? "Saving…" : item ? "Save Changes" : "Add Photo"}
       </Button>
     </form>

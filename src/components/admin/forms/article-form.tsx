@@ -26,6 +26,7 @@ export function ArticleForm({
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [hasFileError, setHasFileError] = useState(false);
   const [contentHtml, setContentHtml] = useState(article?.contentHtml ?? "");
 
   const action = (formData: FormData) => {
@@ -71,9 +72,12 @@ export function ArticleForm({
               accept="image/*"
               onChange={(e) => {
                 const file = e.target.files?.[0];
-                if (file && file.size > 2 * 1024 * 1024) {
-                  toast.error("File size must not exceed 2MB");
+                if (file && file.size > 1 * 1024 * 1024) {
+                  toast.error("File size must not exceed 1MB");
+                  setHasFileError(true);
                   e.target.value = "";
+                } else {
+                  setHasFileError(false);
                 }
               }}
             />
@@ -174,7 +178,7 @@ export function ArticleForm({
         </CardContent>
       </Card>
 
-      <Button type="submit" size="lg" disabled={isPending}>
+      <Button type="submit" size="lg" disabled={isPending || hasFileError}>
         {isPending ? "Saving…" : article ? "Save Changes" : "Create Article"}
       </Button>
     </form>

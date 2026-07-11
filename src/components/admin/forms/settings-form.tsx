@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,6 +13,7 @@ import { updateSiteSettings } from "@/server/actions/settings";
 
 export function SettingsForm({ settings }: { settings: SiteSettings | null }) {
   const [isPending, startTransition] = useTransition();
+  const [hasFileError, setHasFileError] = useState(false);
   const socialLinks = (settings?.socialLinks as Record<string, string> | null) ?? {};
 
   const action = (formData: FormData) => {
@@ -43,9 +44,12 @@ export function SettingsForm({ settings }: { settings: SiteSettings | null }) {
               accept="image/*"
               onChange={(e) => {
                 const file = e.target.files?.[0];
-                if (file && file.size > 2 * 1024 * 1024) {
-                  toast.error("File size must not exceed 2MB");
+                if (file && file.size > 1 * 1024 * 1024) {
+                  toast.error("File size must not exceed 1MB");
+                  setHasFileError(true);
                   e.target.value = "";
+                } else {
+                  setHasFileError(false);
                 }
               }}
             />
@@ -71,9 +75,12 @@ export function SettingsForm({ settings }: { settings: SiteSettings | null }) {
               accept="image/*"
               onChange={(e) => {
                 const file = e.target.files?.[0];
-                if (file && file.size > 2 * 1024 * 1024) {
-                  toast.error("File size must not exceed 2MB");
+                if (file && file.size > 1 * 1024 * 1024) {
+                  toast.error("File size must not exceed 1MB");
+                  setHasFileError(true);
                   e.target.value = "";
+                } else {
+                  setHasFileError(false);
                 }
               }}
             />
@@ -172,7 +179,7 @@ export function SettingsForm({ settings }: { settings: SiteSettings | null }) {
         </CardContent>
       </Card>
 
-      <Button type="submit" size="lg" disabled={isPending}>
+      <Button type="submit" size="lg" disabled={isPending || hasFileError}>
         {isPending ? "Saving…" : "Save Settings"}
       </Button>
     </form>

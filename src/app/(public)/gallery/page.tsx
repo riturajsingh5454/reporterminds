@@ -35,7 +35,7 @@ export default async function GalleryPage({
         <SectionHeading
           eyebrow="Media Library"
           title="Photo Gallery"
-          description="Journalism, events, nature, travel, and academic life — a visual archive."
+          description={`"A picture is worth a thousand words" as it captures emotions, tells stories, and conveys messages that words often cannot. Visuals transcend language barriers, evoking instant connections and deep understanding. This section will carry Clicks taken by me or from friends with due credit.`}
         />
 
         <div className="mt-10 flex flex-wrap gap-2">

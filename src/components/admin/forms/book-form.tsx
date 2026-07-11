@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,7 @@ import { createBook, updateBook, type ActionResult } from "@/server/actions/book
 export function BookForm({ book }: { book?: Book }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [hasFileError, setHasFileError] = useState(false);
   const purchaseLinks = (book?.purchaseLinks as { amazon?: string; flipkart?: string } | null) ?? {};
 
   const action = (formData: FormData) => {
@@ -63,9 +64,12 @@ export function BookForm({ book }: { book?: Book }) {
               required={!book}
               onChange={(e) => {
                 const file = e.target.files?.[0];
-                if (file && file.size > 2 * 1024 * 1024) {
-                  toast.error("File size must not exceed 2MB");
+                if (file && file.size > 1 * 1024 * 1024) {
+                  toast.error("File size must not exceed 1MB");
+                  setHasFileError(true);
                   e.target.value = "";
+                } else {
+                  setHasFileError(false);
                 }
               }}
             />
@@ -90,12 +94,16 @@ export function BookForm({ book }: { book?: Book }) {
                 const files = e.target.files;
                 if (files) {
                   for (let i = 0; i < files.length; i++) {
-                    if (files[i].size > 2 * 1024 * 1024) {
-                      toast.error("Each file must not exceed 2MB");
+                    if (files[i].size > 1 * 1024 * 1024) {
+                      toast.error("Each file must not exceed 1MB");
+                      setHasFileError(true);
                       e.target.value = "";
                       return;
                     }
                   }
+                  setHasFileError(false);
+                } else {
+                  setHasFileError(false);
                 }
               }}
             />
@@ -193,7 +201,7 @@ export function BookForm({ book }: { book?: Book }) {
         </CardContent>
       </Card>
 
-      <Button type="submit" size="lg" disabled={isPending}>
+      <Button type="submit" size="lg" disabled={isPending || hasFileError}>
         {isPending ? "Saving…" : book ? "Save Changes" : "Create Book"}
       </Button>
     </form>

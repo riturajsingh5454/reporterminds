@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma, safeQuery } from "@/lib/prisma";
 
 function dayKey(d: Date) {
   return d.toISOString().slice(5, 10); // MM-DD
@@ -21,16 +21,16 @@ export async function getDashboardData() {
     newsletterSubs,
     recentContacts,
   ] = await Promise.all([
-    prisma.article.count({ where: { status: "PUBLISHED" } }),
-    prisma.book.count({ where: { status: "PUBLISHED" } }),
-    prisma.video.count(),
-    prisma.archive.count(),
-    prisma.gallery.count(),
-    prisma.newsletter.count({ where: { status: "SUBSCRIBED" } }),
-    prisma.contactRequest.count({ where: { status: "NEW" } }),
-    prisma.pageView.findMany({ where: { createdAt: { gte: fourteenDaysAgo } }, select: { createdAt: true } }),
-    prisma.newsletter.findMany({ where: { subscribedAt: { gte: eightWeeksAgo } }, select: { subscribedAt: true } }),
-    prisma.contactRequest.findMany({ orderBy: { createdAt: "desc" }, take: 5 }),
+    safeQuery(() => prisma.article.count({ where: { status: "PUBLISHED" } }), 0),
+    safeQuery(() => prisma.book.count({ where: { status: "PUBLISHED" } }), 0),
+    safeQuery(() => prisma.video.count(), 0),
+    safeQuery(() => prisma.archive.count(), 0),
+    safeQuery(() => prisma.gallery.count(), 0),
+    safeQuery(() => prisma.newsletter.count({ where: { status: "SUBSCRIBED" } }), 0),
+    safeQuery(() => prisma.contactRequest.count({ where: { status: "NEW" } }), 0),
+    safeQuery(() => prisma.pageView.findMany({ where: { createdAt: { gte: fourteenDaysAgo } }, select: { createdAt: true } }), []),
+    safeQuery(() => prisma.newsletter.findMany({ where: { subscribedAt: { gte: eightWeeksAgo } }, select: { subscribedAt: true } }), []),
+    safeQuery(() => prisma.contactRequest.findMany({ orderBy: { createdAt: "desc" }, take: 5 }), []),
   ]);
 
   // Visitors by day, last 14 days

@@ -17,10 +17,10 @@ export async function saveUploadedFile(file: File | null, existingUrl?: string):
     throw new Error("No file uploaded or file is empty");
   }
 
-  // Validate file size (max 2MB)
-  const MAX_SIZE = 2 * 1024 * 1024;
+  // Validate file size (max 1MB)
+  const MAX_SIZE = 1 * 1024 * 1024;
   if (file.size > MAX_SIZE) {
-    throw new Error("File size must not exceed 2MB");
+    throw new Error("File size must not exceed 1MB");
   }
 
   // Validate file type

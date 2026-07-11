@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
+import { prisma, safeQuery } from "@/lib/prisma";
 import { ArticleForm } from "@/components/admin/forms/article-form";
 
 export const metadata: Metadata = { title: "New Article" };
 
 export default async function NewArticlePage() {
-  const categories = await prisma.articleCategory.findMany({ orderBy: { name: "asc" } });
+  const categories = await safeQuery(() => prisma.articleCategory.findMany({ orderBy: { name: "asc" } }), []);
 
   return (
     <div className="max-w-3xl space-y-6">
