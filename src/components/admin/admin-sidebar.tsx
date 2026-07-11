@@ -30,6 +30,7 @@ export function AdminSidebar({ userRole }: AdminSidebarProps) {
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <Link href="/admin" className="flex items-center gap-2 px-2 py-1.5">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/whitelogo.jpeg"
             alt="ReportersMind Logo"

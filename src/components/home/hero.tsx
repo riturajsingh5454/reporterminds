@@ -99,6 +99,7 @@ export function Hero({ tagline, heroMedia }: { tagline?: string | null; heroMedi
           >
             <div className="from-primary/30 via-accent/30 absolute inset-0 rounded-[2rem] bg-gradient-to-br to-transparent blur-2xl" />
             <div className="glass relative h-full w-full overflow-hidden rounded-[2rem] border">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={mediaUrl}
                 alt="ReportersMind Hero"

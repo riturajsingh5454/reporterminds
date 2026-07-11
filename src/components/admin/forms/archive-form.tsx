@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,7 @@ import type { ActionResult } from "@/server/actions/books";
 export function ArchiveForm({ item, categories }: { item?: Archive; categories: ArchiveCategory[] }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [hasFileError, setHasFileError] = useState(false);
 
   const action = (formData: FormData) => {
     startTransition(async () => {
@@ -34,7 +35,7 @@ export function ArchiveForm({ item, categories }: { item?: Archive; categories: 
   };
 
   return (
-    <form action={action} className="space-y-6">
+    <form action={action} className="space-y-6" encType="multipart/form-data">
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Entry Details</CardTitle>
@@ -110,16 +111,36 @@ export function ArchiveForm({ item, categories }: { item?: Archive; categories: 
         <CardHeader>
           <CardTitle className="text-base">Attachments</CardTitle>
         </CardHeader>
-        <CardContent>
-          <Label htmlFor="attachments">One per line: url, type (pdf/image), label</Label>
-          <Textarea
-            id="attachments"
-            name="attachments"
-            rows={4}
-            className="mt-2"
-            placeholder="/uploads/clipping.pdf, pdf, Original clipping"
-            defaultValue={formatAttachmentsField(item?.attachments)}
-          />
+        <CardContent className="grid gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="pdfFile">Upload PDF</Label>
+            <Input
+              id="pdfFile"
+              name="pdfFile"
+              type="file"
+              accept="application/pdf"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file && file.size > 5 * 1024 * 1024) {
+                  toast.error("File size must not exceed 5MB");
+                  setHasFileError(true);
+                  e.target.value = "";
+                } else {
+                  setHasFileError(false);
+                }
+              }}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="attachments">Or manual URLs (One per line: url, type, label)</Label>
+            <Textarea
+              id="attachments"
+              name="attachments"
+              rows={3}
+              placeholder="/uploads/clipping.pdf, pdf, Original clipping"
+              defaultValue={formatAttachmentsField(item?.attachments)}
+            />
+          </div>
         </CardContent>
       </Card>
 
@@ -139,7 +160,7 @@ export function ArchiveForm({ item, categories }: { item?: Archive; categories: 
         </CardContent>
       </Card>
 
-      <Button type="submit" size="lg" disabled={isPending}>
+      <Button type="submit" size="lg" disabled={isPending || hasFileError}>
         {isPending ? "Saving…" : item ? "Save Changes" : "Create Entry"}
       </Button>
     </form>

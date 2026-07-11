@@ -18,6 +18,7 @@ export function Footer() {
         <div className="grid gap-12 lg:grid-cols-[1.2fr_2fr_1.2fr]">
           <div>
             <Link href="/" className="flex items-center gap-2">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/whitelogo.jpeg"
                 alt="ReportersMind Logo"

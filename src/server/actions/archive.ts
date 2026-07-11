@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/rbac";
 import { archiveSchema, parseAttachmentsField } from "@/lib/validations/archive";
+import { saveUploadedFile } from "@/lib/upload";
 import type { ActionResult } from "@/server/actions/books";
 
 function parseArchiveForm(formData: FormData) {
@@ -29,10 +30,23 @@ export async function createArchiveItem(formData: FormData): Promise<ActionResul
   if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message };
 
   const { attachments, tags, ...rest } = parsed.data;
+  const parsedAttachments = parseAttachmentsField(attachments);
+
+  // Handle PDF upload
+  const pdfFile = formData.get("pdfFile") as File | null;
+  if (pdfFile && pdfFile instanceof File && pdfFile.size > 0) {
+    try {
+      const url = await saveUploadedFile(pdfFile);
+      parsedAttachments.push({ url, type: "pdf", label: "Attached Document" });
+    } catch (err) {
+      return { success: false, error: err instanceof Error ? err.message : "Failed to upload PDF" };
+    }
+  }
+
   await prisma.archive.create({
     data: {
       ...rest,
-      attachments: parseAttachmentsField(attachments),
+      attachments: parsedAttachments,
       tags: tags ? tags.split(",").map((t) => t.trim()).filter(Boolean) : [],
     },
   });
@@ -49,11 +63,24 @@ export async function updateArchiveItem(id: string, formData: FormData): Promise
   if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message };
 
   const { attachments, tags, ...rest } = parsed.data;
+  const parsedAttachments = parseAttachmentsField(attachments);
+
+  // Handle PDF upload
+  const pdfFile = formData.get("pdfFile") as File | null;
+  if (pdfFile && pdfFile instanceof File && pdfFile.size > 0) {
+    try {
+      const url = await saveUploadedFile(pdfFile);
+      parsedAttachments.push({ url, type: "pdf", label: "Attached Document" });
+    } catch (err) {
+      return { success: false, error: err instanceof Error ? err.message : "Failed to upload PDF" };
+    }
+  }
+
   await prisma.archive.update({
     where: { id },
     data: {
       ...rest,
-      attachments: parseAttachmentsField(attachments),
+      attachments: parsedAttachments,
       tags: tags ? tags.split(",").map((t) => t.trim()).filter(Boolean) : [],
     },
   });
