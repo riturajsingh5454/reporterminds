@@ -8,7 +8,7 @@ import type { ActionResult } from "@/server/actions/books";
 
 function extractYoutubeId(input: string): string {
   const trimmed = input.trim();
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
   const match = trimmed.match(regExp);
   if (match && match[2].length === 11) {
     return match[2];
@@ -27,6 +27,7 @@ function parseVideoForm(formData: FormData) {
     thumbnail: formData.get("thumbnail") || undefined,
     publishedAt: formData.get("publishedAt"),
     durationSec: formData.get("durationSec") || undefined,
+    viewCount: formData.get("viewCount") || 0,
     category: formData.get("category") || undefined,
     playlistId: formData.get("playlistId") || undefined,
     isFeatured: formData.get("isFeatured") === "on",
@@ -38,7 +39,7 @@ function resolveThumbnailUrl(thumbnailInput: string | undefined, youtubeId: stri
     return `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
   }
   const trimmed = thumbnailInput.trim();
-  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
   const match = trimmed.match(regExp);
   if (match && match[2].length === 11) {
     return `https://i.ytimg.com/vi/${match[2]}/hqdefault.jpg`;

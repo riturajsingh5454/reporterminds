@@ -9,7 +9,7 @@ export const articleSchema = z.object({
     .regex(/^[a-z0-9-]+$/, "Slug must be lowercase letters, numbers, and hyphens only"),
   excerpt: z.string().trim().min(1, "Excerpt is required"),
   contentHtml: z.string().min(1, "Content is required"),
-  coverImage: z.string().trim().min(1, "Cover image URL is required"),
+  coverImage: z.string().trim().optional(),
   categoryId: z.string().trim().optional(),
   tags: z.string().trim().optional(),
   status: z.enum(["DRAFT", "PUBLISHED", "SCHEDULED"]),

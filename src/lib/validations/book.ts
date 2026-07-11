@@ -8,7 +8,7 @@ export const bookSchema = z.object({
     .min(1, "Slug is required")
     .regex(/^[a-z0-9-]+$/, "Slug must be lowercase letters, numbers, and hyphens only"),
   subtitle: z.string().trim().optional(),
-  coverImage: z.string().trim().min(1, "Cover image URL is required"),
+  coverImage: z.string().trim().optional(),
   galleryImages: z.string().trim().optional(),
   description: z.string().trim().min(1, "Description is required"),
   isbn: z.string().trim().optional(),

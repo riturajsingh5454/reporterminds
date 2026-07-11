@@ -24,27 +24,67 @@ export function SettingsForm({ settings }: { settings: SiteSettings | null }) {
   };
 
   return (
-    <form action={action} className="space-y-6">
+    <form action={action} className="space-y-6" encType="multipart/form-data">
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Brand</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="siteName">Site Name</Label>
+            <Label htmlFor="siteName">Site Name <span className="text-destructive">*</span></Label>
             <Input id="siteName" name="siteName" defaultValue={settings?.siteName ?? "ReportersMind"} required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="logoUrl">Logo URL</Label>
-            <Input id="logoUrl" name="logoUrl" defaultValue={settings?.logoUrl ?? ""} />
+            <Label htmlFor="logoFile">Logo Image</Label>
+            <Input
+              id="logoFile"
+              name="logoFile"
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file && file.size > 2 * 1024 * 1024) {
+                  toast.error("File size must not exceed 2MB");
+                  e.target.value = "";
+                }
+              }}
+            />
+            {settings?.logoUrl && (
+              <p className="text-muted-foreground text-xs mt-1">
+                Current:{" "}
+                <a href={settings.logoUrl} target="_blank" rel="noreferrer" className="underline">
+                  {settings.logoUrl}
+                </a>
+              </p>
+            )}
           </div>
           <div className="space-y-2 sm:col-span-2">
             <Label htmlFor="tagline">Tagline</Label>
             <Textarea id="tagline" name="tagline" rows={2} defaultValue={settings?.tagline ?? ""} />
           </div>
           <div className="space-y-2 sm:col-span-2">
-            <Label htmlFor="heroMedia">Hero Media URL</Label>
-            <Input id="heroMedia" name="heroMedia" defaultValue={settings?.heroMedia ?? ""} />
+            <Label htmlFor="heroMediaFile">Hero Media Image</Label>
+            <Input
+              id="heroMediaFile"
+              name="heroMediaFile"
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file && file.size > 2 * 1024 * 1024) {
+                  toast.error("File size must not exceed 2MB");
+                  e.target.value = "";
+                }
+              }}
+            />
+            {settings?.heroMedia && (
+              <p className="text-muted-foreground text-xs mt-1">
+                Current:{" "}
+                <a href={settings.heroMedia} target="_blank" rel="noreferrer" className="underline">
+                  {settings.heroMedia}
+                </a>
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>

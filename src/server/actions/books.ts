@@ -4,16 +4,45 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/rbac";
 import { bookSchema } from "@/lib/validations/book";
+import { saveUploadedFile } from "@/lib/upload";
 
 export type ActionResult = { success: true } | { success: false; error?: string };
 
-function parseBookForm(formData: FormData) {
+async function handleBookImageUpload(formData: FormData, existingCoverImage?: string): Promise<{ coverImage: string; galleryImages: string[] } | { error: string }> {
+  // Handle cover image upload
+  const imageFile = formData.get("imageFile") as File | null;
+  let coverImage = existingCoverImage ?? "";
+  if (imageFile && imageFile instanceof File && imageFile.size > 0) {
+    try {
+      coverImage = await saveUploadedFile(imageFile);
+    } catch (err) {
+      return { error: err instanceof Error ? err.message : "Failed to upload cover image" };
+    }
+  }
+
+  // Handle gallery image uploads
+  const galleryFiles = formData.getAll("galleryFiles") as File[];
+  const galleryImages: string[] = [];
+  for (const file of galleryFiles) {
+    if (file && file instanceof File && file.size > 0) {
+      try {
+        const url = await saveUploadedFile(file);
+        galleryImages.push(url);
+      } catch (err) {
+        return { error: err instanceof Error ? err.message : "Failed to upload gallery image" };
+      }
+    }
+  }
+
+  return { coverImage, galleryImages };
+}
+
+function parseBookForm(formData: FormData, coverImage: string) {
   return bookSchema.safeParse({
     title: formData.get("title"),
     slug: formData.get("slug"),
     subtitle: formData.get("subtitle") || undefined,
-    coverImage: formData.get("coverImage"),
-    galleryImages: formData.get("galleryImages") || undefined,
+    coverImage,
     description: formData.get("description"),
     isbn: formData.get("isbn") || undefined,
     publisher: formData.get("publisher") || undefined,
@@ -33,14 +62,19 @@ function parseBookForm(formData: FormData) {
 
 export async function createBook(formData: FormData): Promise<ActionResult> {
   await requireRole("EDITOR");
-  const parsed = parseBookForm(formData);
+
+  const uploadResult = await handleBookImageUpload(formData);
+  if ("error" in uploadResult) return { success: false, error: uploadResult.error };
+
+  const parsed = parseBookForm(formData, uploadResult.coverImage);
   if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message };
 
-  const { amazonUrl, flipkartUrl, galleryImages, ...rest } = parsed.data;
+  const { amazonUrl, flipkartUrl, ...rest } = parsed.data;
   await prisma.book.create({
     data: {
       ...rest,
-      galleryImages: galleryImages ? galleryImages.split(",").map((s) => s.trim()).filter(Boolean) : [],
+      coverImage: rest.coverImage ?? "",
+      galleryImages: uploadResult.galleryImages,
       purchaseLinks: { amazon: amazonUrl, flipkart: flipkartUrl },
     },
   });
@@ -52,15 +86,26 @@ export async function createBook(formData: FormData): Promise<ActionResult> {
 
 export async function updateBook(id: string, formData: FormData): Promise<ActionResult> {
   await requireRole("EDITOR");
-  const parsed = parseBookForm(formData);
+
+  const existing = await prisma.book.findUnique({ where: { id } });
+  if (!existing) return { success: false, error: "Book not found" };
+
+  const uploadResult = await handleBookImageUpload(formData, existing.coverImage);
+  if ("error" in uploadResult) return { success: false, error: uploadResult.error };
+
+  // Merge new gallery images with existing if new ones are uploaded, otherwise keep existing
+  const galleryImages = uploadResult.galleryImages.length > 0 ? uploadResult.galleryImages : existing.galleryImages;
+
+  const parsed = parseBookForm(formData, uploadResult.coverImage);
   if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message };
 
-  const { amazonUrl, flipkartUrl, galleryImages, ...rest } = parsed.data;
+  const { amazonUrl, flipkartUrl, ...rest } = parsed.data;
   await prisma.book.update({
     where: { id },
     data: {
       ...rest,
-      galleryImages: galleryImages ? galleryImages.split(",").map((s) => s.trim()).filter(Boolean) : [],
+      coverImage: rest.coverImage ?? existing.coverImage,
+      galleryImages,
       purchaseLinks: { amazon: amazonUrl, flipkart: flipkartUrl },
     },
   });

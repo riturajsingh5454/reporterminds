@@ -4,15 +4,40 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/rbac";
 import { siteSettingsSchema } from "@/lib/validations/settings";
+import { saveUploadedFile } from "@/lib/upload";
 import type { ActionResult } from "@/server/actions/books";
 
 export async function updateSiteSettings(formData: FormData): Promise<ActionResult> {
   await requireRole("ADMIN");
+
+  // Handle logo file upload
+  const logoFile = formData.get("logoFile") as File | null;
+  const existing = await prisma.siteSettings.findFirst();
+  let logoUrl = existing?.logoUrl ?? undefined;
+  if (logoFile && logoFile instanceof File && logoFile.size > 0) {
+    try {
+      logoUrl = await saveUploadedFile(logoFile);
+    } catch (err) {
+      return { success: false, error: err instanceof Error ? err.message : "Failed to upload logo" };
+    }
+  }
+
+  // Handle hero media file upload
+  const heroMediaFile = formData.get("heroMediaFile") as File | null;
+  let heroMedia = existing?.heroMedia ?? undefined;
+  if (heroMediaFile && heroMediaFile instanceof File && heroMediaFile.size > 0) {
+    try {
+      heroMedia = await saveUploadedFile(heroMediaFile);
+    } catch (err) {
+      return { success: false, error: err instanceof Error ? err.message : "Failed to upload hero media" };
+    }
+  }
+
   const parsed = siteSettingsSchema.safeParse({
     siteName: formData.get("siteName"),
     tagline: formData.get("tagline") || undefined,
-    logoUrl: formData.get("logoUrl") || undefined,
-    heroMedia: formData.get("heroMedia") || undefined,
+    logoUrl: logoUrl || undefined,
+    heroMedia: heroMedia || undefined,
     contactEmail: formData.get("contactEmail") || "",
     yearsExperience: formData.get("yearsExperience") || undefined,
     studentsMentored: formData.get("studentsMentored") || undefined,
@@ -32,7 +57,6 @@ export async function updateSiteSettings(formData: FormData): Promise<ActionResu
   const {  linkedin, youtube, instagram, ...rest } = parsed.data;
   const socialLinks = { linkedin, youtube, instagram };
 
-  const existing = await prisma.siteSettings.findFirst();
   if (existing) {
     await prisma.siteSettings.update({ where: { id: existing.id }, data: { ...rest, socialLinks } });
   } else {

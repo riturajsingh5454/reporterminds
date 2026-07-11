@@ -31,18 +31,18 @@ export function BookForm({ book }: { book?: Book }) {
   };
 
   return (
-    <form action={action} className="space-y-6">
+    <form action={action} className="space-y-6" encType="multipart/form-data">
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Book Details</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title">Title <span className="text-destructive">*</span></Label>
             <Input id="title" name="title" defaultValue={book?.title} required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="slug">Slug</Label>
+            <Label htmlFor="slug">Slug <span className="text-destructive">*</span></Label>
             <Input id="slug" name="slug" defaultValue={book?.slug} required />
           </div>
           <div className="space-y-2 sm:col-span-2">
@@ -50,16 +50,60 @@ export function BookForm({ book }: { book?: Book }) {
             <Input id="subtitle" name="subtitle" defaultValue={book?.subtitle ?? ""} />
           </div>
           <div className="space-y-2 sm:col-span-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">Description <span className="text-destructive">*</span></Label>
             <Textarea id="description" name="description" rows={5} defaultValue={book?.description} required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="coverImage">Cover Image URL</Label>
-            <Input id="coverImage" name="coverImage" defaultValue={book?.coverImage} required />
+            <Label htmlFor="imageFile">Cover Image {!book && <span className="text-destructive">*</span>}</Label>
+            <Input
+              id="imageFile"
+              name="imageFile"
+              type="file"
+              accept="image/*"
+              required={!book}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file && file.size > 2 * 1024 * 1024) {
+                  toast.error("File size must not exceed 2MB");
+                  e.target.value = "";
+                }
+              }}
+            />
+            {book?.coverImage && (
+              <p className="text-muted-foreground text-xs mt-1">
+                Current:{" "}
+                <a href={book.coverImage} target="_blank" rel="noreferrer" className="underline">
+                  {book.coverImage}
+                </a>
+              </p>
+            )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="galleryImages">Gallery Images (comma-separated URLs)</Label>
-            <Input id="galleryImages" name="galleryImages" defaultValue={book?.galleryImages.join(", ")} />
+            <Label htmlFor="galleryFiles">Gallery Images</Label>
+            <Input
+              id="galleryFiles"
+              name="galleryFiles"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={(e) => {
+                const files = e.target.files;
+                if (files) {
+                  for (let i = 0; i < files.length; i++) {
+                    if (files[i].size > 2 * 1024 * 1024) {
+                      toast.error("Each file must not exceed 2MB");
+                      e.target.value = "";
+                      return;
+                    }
+                  }
+                }
+              }}
+            />
+            {book?.galleryImages && book.galleryImages.length > 0 && (
+              <p className="text-muted-foreground text-xs mt-1">
+                Current: {book.galleryImages.length} image(s)
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>

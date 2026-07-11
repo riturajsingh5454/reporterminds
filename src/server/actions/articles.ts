@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/rbac";
 import { articleSchema } from "@/lib/validations/article";
 import { sanitizeArticleHtml } from "@/lib/sanitize";
+import { saveUploadedFile } from "@/lib/upload";
 import type { ActionResult } from "@/server/actions/books";
 
 function slugify(name: string) {
@@ -23,13 +24,13 @@ async function resolveTagIds(tagsCsv?: string): Promise<string[]> {
   return ids;
 }
 
-function parseArticleForm(formData: FormData) {
+function parseArticleForm(formData: FormData, coverImage?: string) {
   return articleSchema.safeParse({
     title: formData.get("title"),
     slug: formData.get("slug"),
     excerpt: formData.get("excerpt"),
     contentHtml: formData.get("contentHtml"),
-    coverImage: formData.get("coverImage"),
+    coverImage: coverImage || undefined,
     categoryId: formData.get("categoryId") || undefined,
     tags: formData.get("tags") || undefined,
     status: formData.get("status"),
@@ -43,7 +44,20 @@ function parseArticleForm(formData: FormData) {
 
 export async function createArticle(formData: FormData): Promise<ActionResult> {
   const session = await requireRole("EDITOR");
-  const parsed = parseArticleForm(formData);
+
+  // Handle image upload (optional)
+  const imageFile = formData.get("imageFile") as File | null;
+  let coverImage: string | undefined;
+  if (imageFile && imageFile instanceof File && imageFile.size > 0) {
+    try {
+      coverImage = await saveUploadedFile(imageFile);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to upload image";
+      return { success: false, error: message };
+    }
+  }
+
+  const parsed = parseArticleForm(formData, coverImage);
   if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message };
 
   const { tags, scheduledAt, categoryId, ...rest } = parsed.data;
@@ -52,6 +66,7 @@ export async function createArticle(formData: FormData): Promise<ActionResult> {
   await prisma.article.create({
     data: {
       ...rest,
+      coverImage: rest.coverImage ?? "",
       contentHtml: sanitizeArticleHtml(rest.contentHtml),
       categoryId: categoryId || undefined,
       tagIds,
@@ -68,21 +83,37 @@ export async function createArticle(formData: FormData): Promise<ActionResult> {
 
 export async function updateArticle(id: string, formData: FormData): Promise<ActionResult> {
   await requireRole("EDITOR");
-  const parsed = parseArticleForm(formData);
+
+  const existing = await prisma.article.findUnique({ where: { id } });
+  if (!existing) return { success: false, error: "Article not found" };
+
+  // Handle image upload (optional — keep existing if no new file)
+  const imageFile = formData.get("imageFile") as File | null;
+  let coverImage = existing.coverImage;
+  if (imageFile && imageFile instanceof File && imageFile.size > 0) {
+    try {
+      coverImage = await saveUploadedFile(imageFile);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to upload image";
+      return { success: false, error: message };
+    }
+  }
+
+  const parsed = parseArticleForm(formData, coverImage);
   if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message };
 
   const { tags, scheduledAt, categoryId, ...rest } = parsed.data;
   const tagIds = await resolveTagIds(tags);
-  const existing = await prisma.article.findUnique({ where: { id } });
 
   await prisma.article.update({
     where: { id },
     data: {
       ...rest,
+      coverImage: rest.coverImage ?? existing.coverImage,
       contentHtml: sanitizeArticleHtml(rest.contentHtml),
       categoryId: categoryId || null,
       tagIds,
-      publishedAt: rest.status === "PUBLISHED" ? existing?.publishedAt ?? new Date() : existing?.publishedAt,
+      publishedAt: rest.status === "PUBLISHED" ? existing.publishedAt ?? new Date() : existing.publishedAt,
       scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
     },
   });

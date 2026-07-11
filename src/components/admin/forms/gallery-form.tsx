@@ -38,7 +38,7 @@ export function GalleryForm({ item, categories }: { item?: Gallery; categories: 
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2 sm:col-span-2">
-            <Label htmlFor="imageFile">Upload Photo</Label>
+            <Label htmlFor="imageFile">Upload Photo {!item && <span className="text-destructive">*</span>}</Label>
             <Input
               id="imageFile"
               name="imageFile"

@@ -4,9 +4,10 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/rbac";
 import { testimonialSchema } from "@/lib/validations/testimonial";
+import { saveUploadedFile } from "@/lib/upload";
 import type { ActionResult } from "@/server/actions/books";
 
-function parseTestimonialForm(formData: FormData) {
+function parseTestimonialForm(formData: FormData, avatarUrl?: string) {
   return testimonialSchema.safeParse({
     type: formData.get("type"),
     authorName: formData.get("authorName"),
@@ -14,7 +15,7 @@ function parseTestimonialForm(formData: FormData) {
     company: formData.get("company") || undefined,
     content: formData.get("content"),
     videoUrl: formData.get("videoUrl") || undefined,
-    avatarUrl: formData.get("avatarUrl") || undefined,
+    avatarUrl: avatarUrl || undefined,
     category: formData.get("category"),
     rating: formData.get("rating") || undefined,
     isFeatured: formData.get("isFeatured") === "on",
@@ -24,7 +25,20 @@ function parseTestimonialForm(formData: FormData) {
 
 export async function createTestimonial(formData: FormData): Promise<ActionResult> {
   await requireRole("EDITOR");
-  const parsed = parseTestimonialForm(formData);
+
+  // Handle avatar file upload (optional)
+  const avatarFile = formData.get("avatarFile") as File | null;
+  let avatarUrl: string | undefined;
+  if (avatarFile && avatarFile instanceof File && avatarFile.size > 0) {
+    try {
+      avatarUrl = await saveUploadedFile(avatarFile);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to upload avatar";
+      return { success: false, error: message };
+    }
+  }
+
+  const parsed = parseTestimonialForm(formData, avatarUrl);
   if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message };
 
   await prisma.testimonial.create({ data: parsed.data });
@@ -35,7 +49,23 @@ export async function createTestimonial(formData: FormData): Promise<ActionResul
 
 export async function updateTestimonial(id: string, formData: FormData): Promise<ActionResult> {
   await requireRole("EDITOR");
-  const parsed = parseTestimonialForm(formData);
+
+  const existing = await prisma.testimonial.findUnique({ where: { id } });
+  if (!existing) return { success: false, error: "Testimonial not found" };
+
+  // Handle avatar file upload (optional — keep existing if no new file)
+  const avatarFile = formData.get("avatarFile") as File | null;
+  let avatarUrl = existing.avatarUrl ?? undefined;
+  if (avatarFile && avatarFile instanceof File && avatarFile.size > 0) {
+    try {
+      avatarUrl = await saveUploadedFile(avatarFile);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to upload avatar";
+      return { success: false, error: message };
+    }
+  }
+
+  const parsed = parseTestimonialForm(formData, avatarUrl);
   if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message };
 
   await prisma.testimonial.update({ where: { id }, data: parsed.data });

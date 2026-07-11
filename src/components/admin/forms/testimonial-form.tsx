@@ -33,14 +33,14 @@ export function TestimonialForm({ testimonial }: { testimonial?: Testimonial }) 
   };
 
   return (
-    <form action={action} className="space-y-6">
+    <form action={action} className="space-y-6" encType="multipart/form-data">
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Testimonial</CardTitle>
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="authorName">Author Name</Label>
+            <Label htmlFor="authorName">Author Name <span className="text-destructive">*</span></Label>
             <Input id="authorName" name="authorName" defaultValue={testimonial?.authorName} required />
           </div>
           <div className="space-y-2">
@@ -52,11 +52,31 @@ export function TestimonialForm({ testimonial }: { testimonial?: Testimonial }) 
             <Input id="company" name="company" defaultValue={testimonial?.company ?? ""} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="avatarUrl">Avatar URL</Label>
-            <Input id="avatarUrl" name="avatarUrl" defaultValue={testimonial?.avatarUrl ?? ""} />
+            <Label htmlFor="avatarFile">Avatar Image</Label>
+            <Input
+              id="avatarFile"
+              name="avatarFile"
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file && file.size > 2 * 1024 * 1024) {
+                  toast.error("File size must not exceed 2MB");
+                  e.target.value = "";
+                }
+              }}
+            />
+            {testimonial?.avatarUrl && (
+              <p className="text-muted-foreground text-xs mt-1">
+                Current:{" "}
+                <a href={testimonial.avatarUrl} target="_blank" rel="noreferrer" className="underline">
+                  {testimonial.avatarUrl}
+                </a>
+              </p>
+            )}
           </div>
           <div className="space-y-2 sm:col-span-2">
-            <Label htmlFor="content">Testimonial Content</Label>
+            <Label htmlFor="content">Testimonial Content <span className="text-destructive">*</span></Label>
             <Textarea id="content" name="content" rows={4} defaultValue={testimonial?.content} required />
           </div>
           <div className="space-y-2">

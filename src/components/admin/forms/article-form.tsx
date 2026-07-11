@@ -42,7 +42,7 @@ export function ArticleForm({
   };
 
   return (
-    <form action={action} className="space-y-6">
+    <form action={action} className="space-y-6" encType="multipart/form-data">
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Content</CardTitle>
@@ -50,24 +50,44 @@ export function ArticleForm({
         <CardContent className="grid gap-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="title">Title</Label>
+              <Label htmlFor="title">Title <span className="text-destructive">*</span></Label>
               <Input id="title" name="title" defaultValue={article?.title} required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="slug">Slug</Label>
+              <Label htmlFor="slug">Slug <span className="text-destructive">*</span></Label>
               <Input id="slug" name="slug" defaultValue={article?.slug} required />
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="excerpt">Excerpt</Label>
+            <Label htmlFor="excerpt">Excerpt <span className="text-destructive">*</span></Label>
             <Textarea id="excerpt" name="excerpt" rows={2} defaultValue={article?.excerpt} required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="coverImage">Cover Image URL</Label>
-            <Input id="coverImage" name="coverImage" defaultValue={article?.coverImage} required />
+            <Label htmlFor="imageFile">Cover Image (optional)</Label>
+            <Input
+              id="imageFile"
+              name="imageFile"
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file && file.size > 2 * 1024 * 1024) {
+                  toast.error("File size must not exceed 2MB");
+                  e.target.value = "";
+                }
+              }}
+            />
+            {article?.coverImage && (
+              <p className="text-muted-foreground text-xs mt-1">
+                Current:{" "}
+                <a href={article.coverImage} target="_blank" rel="noreferrer" className="underline">
+                  {article.coverImage}
+                </a>
+              </p>
+            )}
           </div>
           <div className="space-y-2">
-            <Label>Body</Label>
+            <Label>Body <span className="text-destructive">*</span></Label>
             <RichTextEditor defaultValue={article?.contentHtml} onChange={setContentHtml} />
           </div>
         </CardContent>

@@ -9,6 +9,7 @@ export const videoSchema = z.object({
   durationSec: z.coerce.number().int().optional(),
   category: z.string().trim().optional(),
   playlistId: z.string().trim().optional(),
+  viewCount: z.coerce.number().int().min(0).default(0),
   isFeatured: z.coerce.boolean().optional(),
 });
 

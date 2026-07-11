@@ -41,15 +41,15 @@ export function ArchiveForm({ item, categories }: { item?: Archive; categories: 
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title">Title <span className="text-destructive">*</span></Label>
             <Input id="title" name="title" defaultValue={item?.title} required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="slug">Slug</Label>
+            <Label htmlFor="slug">Slug <span className="text-destructive">*</span></Label>
             <Input id="slug" name="slug" defaultValue={item?.slug} required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="year">Year</Label>
+            <Label htmlFor="year">Year <span className="text-destructive">*</span></Label>
             <Input id="year" name="year" type="number" defaultValue={item?.year} required />
           </div>
           <div className="space-y-2">

@@ -38,15 +38,15 @@ export function UserForm({ user }: { user?: User }) {
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">Name <span className="text-destructive">*</span></Label>
             <Input id="name" name="name" defaultValue={user?.name} required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">Email <span className="text-destructive">*</span></Label>
             <Input id="email" name="email" type="email" defaultValue={user?.email} required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">{user ? "New Password (leave blank to keep current)" : "Password"}</Label>
+            <Label htmlFor="password">{user ? "New Password (leave blank to keep current)" : <>Password <span className="text-destructive">*</span></>}</Label>
             <Input id="password" name="password" type="password" required={!user} minLength={8} />
           </div>
           <div className="space-y-2">

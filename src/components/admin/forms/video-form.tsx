@@ -38,11 +38,11 @@ export function VideoForm({ video, playlists }: { video?: Video; playlists: Play
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="youtubeId">YouTube Video ID</Label>
+            <Label htmlFor="youtubeId">YouTube Video ID <span className="text-destructive">*</span></Label>
             <Input id="youtubeId" name="youtubeId" defaultValue={video?.youtubeId} required />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title">Title <span className="text-destructive">*</span></Label>
             <Input id="title" name="title" defaultValue={video?.title} required />
           </div>
           <div className="space-y-2 sm:col-span-2">
@@ -54,7 +54,7 @@ export function VideoForm({ video, playlists }: { video?: Video; playlists: Play
             <Input id="thumbnail" name="thumbnail" defaultValue={video?.thumbnail ?? ""} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="publishedAt">Published Date</Label>
+            <Label htmlFor="publishedAt">Published Date <span className="text-destructive">*</span></Label>
             <Input
               id="publishedAt"
               name="publishedAt"
@@ -66,6 +66,10 @@ export function VideoForm({ video, playlists }: { video?: Video; playlists: Play
           <div className="space-y-2">
             <Label htmlFor="durationSec">Duration (seconds)</Label>
             <Input id="durationSec" name="durationSec" type="number" defaultValue={video?.durationSec ?? ""} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="viewCount">View Count</Label>
+            <Input id="viewCount" name="viewCount" type="number" min={0} defaultValue={video?.viewCount ?? 0} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="category">Category</Label>
