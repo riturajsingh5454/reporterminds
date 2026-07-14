@@ -25,7 +25,7 @@ export function SettingsForm({ settings }: { settings: SiteSettings | null }) {
   };
 
   return (
-    <form action={action} className="space-y-6" encType="multipart/form-data">
+    <form action={action} className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Brand</CardTitle>

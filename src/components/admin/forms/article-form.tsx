@@ -43,7 +43,7 @@ export function ArticleForm({
   };
 
   return (
-    <form action={action} className="space-y-6" encType="multipart/form-data">
+    <form action={action} className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Content</CardTitle>

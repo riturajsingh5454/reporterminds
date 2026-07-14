@@ -9,10 +9,30 @@ import { Button } from "@/components/ui/button";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
 
+function getGoogleDriveEmbedUrl(url: string): string | null {
+  const fileId = url.match(/\/file\/d\/([^/]+)/)?.[1] ?? url.match(/[?&]id=([^&]+)/)?.[1];
+  return fileId ? `https://drive.google.com/file/d/${fileId}/preview` : null;
+}
+
 export function PdfViewer({ url }: { url: string }) {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [failed, setFailed] = useState(false);
+
+  const driveEmbedUrl = url.includes("drive.google.com") ? getGoogleDriveEmbedUrl(url) : null;
+
+  if (driveEmbedUrl) {
+    return (
+      <div className="overflow-hidden rounded-lg border border-border/60 bg-secondary/20">
+        <iframe
+          src={driveEmbedUrl}
+          title="Document preview"
+          className="h-[700px] w-full"
+          allow="autoplay"
+        />
+      </div>
+    );
+  }
 
   if (failed) {
     return (

@@ -32,7 +32,7 @@ export function GalleryForm({ item, categories }: { item?: Gallery; categories: 
   };
 
   return (
-    <form action={action} className="space-y-6" encType="multipart/form-data">
+    <form action={action} className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Photo Details</CardTitle>

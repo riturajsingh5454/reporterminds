@@ -35,7 +35,7 @@ export function ArchiveForm({ item, categories }: { item?: Archive; categories: 
   };
 
   return (
-    <form action={action} className="space-y-6" encType="multipart/form-data">
+    <form action={action} className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Entry Details</CardTitle>

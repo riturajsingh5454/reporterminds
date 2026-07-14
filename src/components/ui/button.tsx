@@ -51,6 +51,7 @@ function Button({
       data-slot="button"
       nativeButton={!props.render}
       className={cn(buttonVariants({ variant, size, className }))}
+      suppressHydrationWarning
       {...props}
     />
   )
