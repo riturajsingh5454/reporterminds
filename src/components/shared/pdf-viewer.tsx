@@ -1,38 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
-import { ChevronLeft, ChevronRight, Loader2, AlertTriangle, Download } from "lucide-react";
+import { Loader2, AlertTriangle, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
 
-function getGoogleDriveEmbedUrl(url: string): string | null {
-  const fileId = url.match(/\/file\/d\/([^/]+)/)?.[1] ?? url.match(/[?&]id=([^&]+)/)?.[1];
-  return fileId ? `https://drive.google.com/file/d/${fileId}/preview` : null;
+function resolveFileUrl(url: string): string {
+  return url.includes("drive.google.com") ? `/api/drive-file?url=${encodeURIComponent(url)}` : url;
 }
+
+const MAX_PAGE_WIDTH = 720;
 
 export function PdfViewer({ url }: { url: string }) {
   const [numPages, setNumPages] = useState<number | null>(null);
-  const [page, setPage] = useState(1);
   const [failed, setFailed] = useState(false);
+  const [pageWidth, setPageWidth] = useState(MAX_PAGE_WIDTH);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const driveEmbedUrl = url.includes("drive.google.com") ? getGoogleDriveEmbedUrl(url) : null;
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-  if (driveEmbedUrl) {
-    return (
-      <div className="overflow-hidden rounded-lg border border-border/60 bg-secondary/20">
-        <iframe
-          src={driveEmbedUrl}
-          title="Document preview"
-          className="h-[700px] w-full"
-          allow="autoplay"
-        />
-      </div>
-    );
-  }
+    const observer = new ResizeObserver(([entry]) => {
+      setPageWidth(Math.min(MAX_PAGE_WIDTH, entry.contentRect.width));
+    });
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
+
+  const fileUrl = resolveFileUrl(url);
 
   if (failed) {
     return (
@@ -47,9 +47,12 @@ export function PdfViewer({ url }: { url: string }) {
   }
 
   return (
-    <div className="rounded-lg border border-border/60 bg-secondary/20 p-4">
+    <div
+      ref={containerRef}
+      className="max-h-[80vh] w-full overflow-y-auto rounded-lg border border-border/60 bg-secondary/20 p-2 sm:p-4"
+    >
       <Document
-        file={url}
+        file={fileUrl}
         onLoadSuccess={({ numPages }) => setNumPages(numPages)}
         onLoadError={() => setFailed(true)}
         loading={
@@ -57,28 +60,14 @@ export function PdfViewer({ url }: { url: string }) {
             <Loader2 className="size-4 animate-spin" /> Loading document…
           </div>
         }
+        className="flex flex-col items-center gap-4"
       >
-        <Page pageNumber={page} width={720} />
+        {numPages
+          ? Array.from({ length: numPages }, (_, i) => (
+              <Page key={i + 1} pageNumber={i + 1} width={pageWidth} className="max-w-full" />
+            ))
+          : null}
       </Document>
-
-      {numPages ? (
-        <div className="mt-4 flex items-center justify-center gap-4">
-          <Button variant="outline" size="icon-sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
-            <ChevronLeft className="size-4" />
-          </Button>
-          <span className="text-muted-foreground text-sm">
-            Page {page} of {numPages}
-          </span>
-          <Button
-            variant="outline"
-            size="icon-sm"
-            disabled={page >= numPages}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            <ChevronRight className="size-4" />
-          </Button>
-        </div>
-      ) : null}
     </div>
   );
 }
