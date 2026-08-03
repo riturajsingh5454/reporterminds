@@ -1,4 +1,4 @@
-import { ExternalLink } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function PurchaseLinks({ links }: { links: unknown }) {
@@ -9,8 +9,13 @@ export function PurchaseLinks({ links }: { links: unknown }) {
   return (
     <div className="flex flex-wrap gap-3">
       {entries.map(([store, url]) => (
-        <Button key={store} variant="outline" render={<a href={url} target="_blank" rel="noreferrer" />}>
-          Buy on {store.charAt(0).toUpperCase() + store.slice(1)} <ExternalLink className="size-3.5" />
+        <Button
+          key={store}
+          size="lg"
+          className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium gap-2"
+          render={<a href={url} target="_blank" rel="noreferrer" />}
+        >
+          <ShoppingCart className="size-4" /> Buy on {store.charAt(0).toUpperCase() + store.slice(1)}
         </Button>
       ))}
     </div>

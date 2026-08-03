@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Download, Share2 } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { Container } from "@/components/shared/container";
 import { Reveal, RevealGroup, RevealItem } from "@/components/shared/reveal";
@@ -84,11 +84,6 @@ export default async function ArchiveDetailPage({
               <Button variant="outline" size="sm">
                 <Share2 className="size-3.5" /> Share
               </Button>
-              {attachments[0] ? (
-                <Button variant="outline" size="sm" render={<a href={attachments[0].url} download />}>
-                  <Download className="size-3.5" /> Download
-                </Button>
-              ) : null}
             </div>
           </Reveal>
 
