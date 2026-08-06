@@ -28,6 +28,7 @@ export function ArticleForm({
   const [isPending, startTransition] = useTransition();
   const [hasFileError, setHasFileError] = useState(false);
   const [contentHtml, setContentHtml] = useState(article?.contentHtml ?? "");
+  const [status, setStatus] = useState(article?.status ?? "DRAFT");
 
   const action = (formData: FormData) => {
     formData.set("contentHtml", contentHtml);
@@ -135,7 +136,7 @@ export function ArticleForm({
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="status">Status</Label>
-            <Select name="status" defaultValue={article?.status ?? "DRAFT"}>
+            <Select name="status" defaultValue={article?.status ?? "DRAFT"} onValueChange={(v) => setStatus(v)}>
               <SelectTrigger id="status">
                 <SelectValue />
               </SelectTrigger>
@@ -146,15 +147,33 @@ export function ArticleForm({
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="scheduledAt">Scheduled For</Label>
-            <Input
-              id="scheduledAt"
-              name="scheduledAt"
-              type="datetime-local"
-              defaultValue={article?.scheduledAt ? new Date(article.scheduledAt).toISOString().slice(0, 16) : ""}
-            />
-          </div>
+          {status === "PUBLISHED" && (
+            <div className="space-y-2">
+              <Label htmlFor="publishedAt">Published Date</Label>
+              <Input
+                id="publishedAt"
+                name="publishedAt"
+                type="datetime-local"
+                defaultValue={
+                  article?.publishedAt
+                    ? new Date(article.publishedAt).toISOString().slice(0, 16)
+                    : new Date().toISOString().slice(0, 16)
+                }
+              />
+              <p className="text-muted-foreground text-xs">Leave as-is for current date, or pick a past/future date.</p>
+            </div>
+          )}
+          {status === "SCHEDULED" && (
+            <div className="space-y-2">
+              <Label htmlFor="scheduledAt">Scheduled For</Label>
+              <Input
+                id="scheduledAt"
+                name="scheduledAt"
+                type="datetime-local"
+                defaultValue={article?.scheduledAt ? new Date(article.scheduledAt).toISOString().slice(0, 16) : ""}
+              />
+            </div>
+          )}
           <div className="flex items-center gap-3 pt-2">
             <Switch id="isFeatured" name="isFeatured" defaultChecked={article?.isFeatured} />
             <Label htmlFor="isFeatured">Featured</Label>

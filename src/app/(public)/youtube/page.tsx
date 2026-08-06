@@ -37,7 +37,7 @@ export default async function YoutubePage() {
             nativeButton={false}
             render={
               <a
-                href="https://youtube.com"
+                href="https://www.youtube.com/@SanjayMohanJohri"
                 target="_blank"
                 rel="noreferrer"
               />

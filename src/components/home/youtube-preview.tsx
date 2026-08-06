@@ -39,7 +39,7 @@ export function YoutubePreview({
         </RevealGroup>
 
         <div className="mt-10 flex justify-center">
-          <Button size="lg" render={<a href="https://youtube.com" target="_blank" rel="noreferrer" />}>
+          <Button size="lg" render={<a href="https://www.youtube.com/@SanjayMohanJohri" target="_blank" rel="noreferrer" />}>
             <YoutubeIcon className="size-4" /> Subscribe on YouTube
           </Button>
         </div>

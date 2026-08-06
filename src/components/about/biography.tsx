@@ -9,9 +9,9 @@ export function Biography({ tagline }: { tagline?: string | null }) {
           <span className="text-primary mb-3 block text-xs font-semibold tracking-[0.2em] uppercase">
             About
           </span>
-          <h1 className="font-display text-balance text-4xl sm:text-5xl">Prof (Dr) Sanjay M. Johri</h1>
+          <h1 className="font-display text-balance text-4xl sm:text-5xl">Dr. Sanjay M. Johri</h1>
           <p className="text-muted-foreground mt-6 text-lg leading-relaxed">
-            {tagline ?? "Journalist, author, professor, mentor, and climate communicator."}
+            {"Senior Media Consultant | Former Professor-Director, Amity School of Communication, Amity University | Ex-PTI Journalist | Development Communication Specialist"}
           </p>
           <div className="prose-neutral mt-8 space-y-5 text-base leading-relaxed text-foreground/90">
             <p>

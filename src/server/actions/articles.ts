@@ -34,6 +34,7 @@ function parseArticleForm(formData: FormData, coverImage?: string) {
     categoryId: formData.get("categoryId") || undefined,
     tags: formData.get("tags") || undefined,
     status: formData.get("status"),
+    publishedAt: formData.get("publishedAt") || undefined,
     scheduledAt: formData.get("scheduledAt") || undefined,
     isFeatured: formData.get("isFeatured") === "on",
     readTimeMins: formData.get("readTimeMins") || 1,
@@ -60,7 +61,7 @@ export async function createArticle(formData: FormData): Promise<ActionResult> {
   const parsed = parseArticleForm(formData, coverImage);
   if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message };
 
-  const { tags, scheduledAt, categoryId, ...rest } = parsed.data;
+  const { tags, publishedAt, scheduledAt, categoryId, ...rest } = parsed.data;
   const tagIds = await resolveTagIds(tags);
 
   await prisma.article.create({
@@ -71,7 +72,9 @@ export async function createArticle(formData: FormData): Promise<ActionResult> {
       categoryId: categoryId || undefined,
       tagIds,
       authorId: session.sub,
-      publishedAt: rest.status === "PUBLISHED" ? new Date() : null,
+      publishedAt: rest.status === "PUBLISHED"
+        ? (publishedAt ? new Date(publishedAt) : new Date())
+        : null,
       scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
     },
   });
@@ -102,7 +105,7 @@ export async function updateArticle(id: string, formData: FormData): Promise<Act
   const parsed = parseArticleForm(formData, coverImage);
   if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message };
 
-  const { tags, scheduledAt, categoryId, ...rest } = parsed.data;
+  const { tags, publishedAt, scheduledAt, categoryId, ...rest } = parsed.data;
   const tagIds = await resolveTagIds(tags);
 
   await prisma.article.update({
@@ -113,7 +116,9 @@ export async function updateArticle(id: string, formData: FormData): Promise<Act
       contentHtml: sanitizeArticleHtml(rest.contentHtml),
       categoryId: categoryId || null,
       tagIds,
-      publishedAt: rest.status === "PUBLISHED" ? existing.publishedAt ?? new Date() : existing.publishedAt,
+      publishedAt: rest.status === "PUBLISHED"
+        ? (publishedAt ? new Date(publishedAt) : existing.publishedAt ?? new Date())
+        : existing.publishedAt,
       scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
     },
   });

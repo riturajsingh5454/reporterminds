@@ -13,6 +13,7 @@ export const articleSchema = z.object({
   categoryId: z.string().trim().optional(),
   tags: z.string().trim().optional(),
   status: z.enum(["DRAFT", "PUBLISHED", "SCHEDULED"]),
+  publishedAt: z.string().trim().optional(),
   scheduledAt: z.string().trim().optional(),
   isFeatured: z.coerce.boolean().optional(),
   readTimeMins: z.coerce.number().int().min(1).default(1),
