@@ -136,7 +136,7 @@ export function ArticleForm({
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="status">Status</Label>
-            <Select name="status" defaultValue={article?.status ?? "DRAFT"} onValueChange={(v) => setStatus(v)}>
+            <Select name="status" defaultValue={article?.status ?? "DRAFT"} onValueChange={(v) => setStatus(v as "DRAFT" | "PUBLISHED" | "SCHEDULED")}>
               <SelectTrigger id="status">
                 <SelectValue />
               </SelectTrigger>
