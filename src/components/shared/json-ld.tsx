@@ -1,5 +1,5 @@
 export function JsonLd({ data }: { data: Record<string, unknown> }) {
-  return (
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
-  );
+  // Escape "<" so content such as "</script>" in a title cannot break out of the script tag.
+  const json = JSON.stringify(data).replace(/</g, "\\u003c");
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: json }} />;
 }

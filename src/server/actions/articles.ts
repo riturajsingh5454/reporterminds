@@ -81,6 +81,7 @@ export async function createArticle(formData: FormData): Promise<ActionResult> {
 
   revalidatePath("/admin/articles");
   revalidatePath("/blog");
+  revalidatePath("/");
   return { success: true };
 }
 
@@ -125,6 +126,7 @@ export async function updateArticle(id: string, formData: FormData): Promise<Act
 
   revalidatePath("/admin/articles");
   revalidatePath("/blog");
+  revalidatePath("/");
   return { success: true };
 }
 
@@ -133,6 +135,7 @@ export async function deleteArticle(id: string): Promise<ActionResult> {
   await prisma.article.delete({ where: { id } });
   revalidatePath("/admin/articles");
   revalidatePath("/blog");
+  revalidatePath("/");
   return { success: true };
 }
 
@@ -141,5 +144,6 @@ export async function bulkDeleteArticles(ids: string[]): Promise<ActionResult> {
   await prisma.article.deleteMany({ where: { id: { in: ids } } });
   revalidatePath("/admin/articles");
   revalidatePath("/blog");
+  revalidatePath("/");
   return { success: true };
 }

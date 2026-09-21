@@ -3,7 +3,7 @@ import { NextRequest } from "next/server";
 export const maxDuration = 60;
 
 function extractDriveId(url: string): string | null {
-  return url.match(/\/file\/d\/([^/]+)/)?.[1] ?? url.match(/[?&]id=([^&]+)/)?.[1] ?? null;
+  return url.match(/\/file\/d\/([\w-]+)/)?.[1] ?? url.match(/[?&]id=([\w-]+)/)?.[1] ?? null;
 }
 
 async function resolveDownloadUrl(id: string): Promise<string> {
@@ -32,7 +32,13 @@ async function resolveDownloadUrl(id: string): Promise<string> {
 
 export async function GET(request: NextRequest) {
   const url = request.nextUrl.searchParams.get("url");
-  if (!url || !url.includes("drive.google.com")) {
+  let host: string | null = null;
+  try {
+    host = url ? new URL(url).hostname : null;
+  } catch {
+    host = null;
+  }
+  if (!url || host !== "drive.google.com") {
     return new Response("Invalid url", { status: 400 });
   }
 

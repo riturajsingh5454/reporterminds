@@ -53,6 +53,7 @@ export async function createArchiveItem(formData: FormData): Promise<ActionResul
 
   revalidatePath("/admin/archive");
   revalidatePath("/archive");
+  revalidatePath("/");
   revalidatePath("/legacy-in-print");
   return { success: true };
 }
@@ -87,6 +88,7 @@ export async function updateArchiveItem(id: string, formData: FormData): Promise
 
   revalidatePath("/admin/archive");
   revalidatePath("/archive");
+  revalidatePath("/");
   revalidatePath("/legacy-in-print");
   return { success: true };
 }
@@ -96,6 +98,7 @@ export async function deleteArchiveItem(id: string): Promise<ActionResult> {
   await prisma.archive.delete({ where: { id } });
   revalidatePath("/admin/archive");
   revalidatePath("/archive");
+  revalidatePath("/");
   return { success: true };
 }
 
@@ -104,5 +107,6 @@ export async function bulkDeleteArchiveItems(ids: string[]): Promise<ActionResul
   await prisma.archive.deleteMany({ where: { id: { in: ids } } });
   revalidatePath("/admin/archive");
   revalidatePath("/archive");
+  revalidatePath("/");
   return { success: true };
 }

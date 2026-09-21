@@ -19,7 +19,7 @@ export default async function AboutPage() {
 
   return (
     <>
-      <Biography tagline={siteSettings?.tagline} />
+      <Biography />
       <FullTimeline events={timelineEvents} />
       <AchievementsGrid achievements={achievements} />
       <GalleryPreview items={galleryItems} />

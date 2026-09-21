@@ -1,5 +1,6 @@
 import { prisma, safeQuery } from "@/lib/prisma";
 import { JsonLd } from "@/components/shared/json-ld";
+import { BreakingNewsTicker } from "@/components/home/breaking-news-ticker";
 import { Hero } from "@/components/home/hero";
 import { StatsSection } from "@/components/home/stats-section";
 import { FeaturedBooks } from "@/components/home/featured-books";
@@ -90,6 +91,7 @@ export default async function HomePage() {
           url: process.env.NEXT_PUBLIC_SITE_URL,
         }}
       />
+      <BreakingNewsTicker />
       <Hero tagline={data.siteSettings?.tagline} heroMedia={data.siteSettings?.heroMedia} />
       <StatsSection stats={data.stats} />
       <FeaturedBooks books={data.featuredBooks} />

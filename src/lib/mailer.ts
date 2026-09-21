@@ -13,6 +13,15 @@ function getTransport() {
   });
 }
 
+export function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export async function sendMail(options: { to: string; subject: string; html: string }) {
   const transport = getTransport();
   if (!transport) {

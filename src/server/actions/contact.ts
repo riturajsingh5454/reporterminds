@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { contactRequestSchema } from "@/lib/validations/contact";
-import { sendMail } from "@/lib/mailer";
+import { sendMail, escapeHtml } from "@/lib/mailer";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 export type ContactActionResult = { success: true } | { success: false; error: string };
@@ -34,7 +34,7 @@ export async function submitContactRequest(formData: FormData): Promise<ContactA
     await sendMail({
       to: adminEmail,
       subject: `New ${parsed.data.type.replace("_", " ").toLowerCase()} inquiry from ${parsed.data.name}`,
-      html: `<p><strong>From:</strong> ${parsed.data.name} (${parsed.data.email})</p><p><strong>Type:</strong> ${parsed.data.type}</p><p>${parsed.data.message}</p>`,
+      html: `<p><strong>From:</strong> ${escapeHtml(parsed.data.name)} (${escapeHtml(parsed.data.email)})</p><p><strong>Type:</strong> ${parsed.data.type}</p><p>${escapeHtml(parsed.data.message).replace(/\n/g, "<br>")}</p>`,
     });
   }
 

@@ -32,7 +32,7 @@ export async function createUser(formData: FormData): Promise<ActionResult> {
 }
 
 export async function updateUser(id: string, formData: FormData): Promise<ActionResult> {
-  await requireRole("SUPER_ADMIN");
+  const session = await requireRole("SUPER_ADMIN");
   const parsed = userUpdateSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -42,6 +42,10 @@ export async function updateUser(id: string, formData: FormData): Promise<Action
     isActive: formData.get("isActive") === "on",
   });
   if (!parsed.success) return { success: false, error: parsed.error.issues[0]?.message };
+
+  if (session.sub === id && (parsed.data.role !== "SUPER_ADMIN" || !parsed.data.isActive)) {
+    return { success: false, error: "You cannot demote or deactivate your own account." };
+  }
 
   const { password, ...rest } = parsed.data;
   await prisma.user.update({

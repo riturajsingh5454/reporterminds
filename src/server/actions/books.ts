@@ -81,6 +81,7 @@ export async function createBook(formData: FormData): Promise<ActionResult> {
 
   revalidatePath("/admin/books");
   revalidatePath("/books");
+  revalidatePath("/");
   return { success: true };
 }
 
@@ -112,6 +113,7 @@ export async function updateBook(id: string, formData: FormData): Promise<Action
 
   revalidatePath("/admin/books");
   revalidatePath("/books");
+  revalidatePath("/");
   return { success: true };
 }
 
@@ -120,6 +122,7 @@ export async function deleteBook(id: string): Promise<ActionResult> {
   await prisma.book.delete({ where: { id } });
   revalidatePath("/admin/books");
   revalidatePath("/books");
+  revalidatePath("/");
   return { success: true };
 }
 
@@ -128,5 +131,6 @@ export async function bulkDeleteBooks(ids: string[]): Promise<ActionResult> {
   await prisma.book.deleteMany({ where: { id: { in: ids } } });
   revalidatePath("/admin/books");
   revalidatePath("/books");
+  revalidatePath("/");
   return { success: true };
 }

@@ -7,6 +7,7 @@ import {
   SESSION_COOKIE_NAME,
   type AuthTokenPayload,
 } from "@/lib/auth/jwt";
+import { prisma } from "@/lib/prisma";
 
 export { SESSION_COOKIE_NAME };
 
@@ -31,5 +32,18 @@ export async function getSession(): Promise<AuthTokenPayload | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   if (!token) return null;
-  return verifyAuthToken(token);
+
+  const claims = await verifyAuthToken(token);
+  if (!claims) return null;
+
+  // The token only proves who logged in. Re-check the user so that deactivated, deleted,
+  // demoted or password-reset accounts lose access immediately instead of after 7 days.
+  const user = await prisma.user.findUnique({
+    where: { id: claims.sub },
+    select: { email: true, name: true, role: true, isActive: true, updatedAt: true },
+  });
+  if (!user || !user.isActive) return null;
+  if (claims.iat < Math.floor(user.updatedAt.getTime() / 1000)) return null;
+
+  return { sub: claims.sub, email: user.email, name: user.name, role: user.role };
 }

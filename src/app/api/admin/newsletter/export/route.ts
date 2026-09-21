@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRole, UnauthorizedError, ForbiddenError } from "@/lib/rbac";
+import { toCsvRow } from "@/lib/csv";
 
 export async function GET() {
   try {
@@ -14,15 +15,12 @@ export async function GET() {
 
   const subscribers = await prisma.newsletter.findMany({ orderBy: { subscribedAt: "desc" } });
 
-  const header = "email,status,source,subscribedAt";
-  const rows = subscribers.map((s) =>
-    [s.email, s.status, s.source ?? "", s.subscribedAt.toISOString()].map((v) => `"${v.replace(/"/g, '""')}"`).join(","),
-  );
-  const csv = [header, ...rows].join("\n");
+  const rows = subscribers.map((s) => toCsvRow([s.email, s.status, s.source ?? "", s.subscribedAt.toISOString()]));
+  const csv = [toCsvRow(["email", "status", "source", "subscribedAt"]), ...rows].join("\n");
 
   return new NextResponse(csv, {
     headers: {
-      "Content-Type": "text/csv",
+      "Content-Type": "text/csv; charset=utf-8",
       "Content-Disposition": `attachment; filename="newsletter-subscribers.csv"`,
     },
   });

@@ -26,7 +26,9 @@ export async function signAuthToken(payload: AuthTokenPayload): Promise<string> 
     .sign(getSecretKey());
 }
 
-export async function verifyAuthToken(token: string): Promise<AuthTokenPayload | null> {
+export type VerifiedAuthToken = AuthTokenPayload & { iat: number };
+
+export async function verifyAuthToken(token: string): Promise<VerifiedAuthToken | null> {
   try {
     const { payload } = await jwtVerify(token, getSecretKey());
     if (typeof payload.sub !== "string" || typeof payload.email !== "string" || typeof payload.role !== "string") {
@@ -37,6 +39,7 @@ export async function verifyAuthToken(token: string): Promise<AuthTokenPayload |
       email: payload.email as string,
       name: (payload.name as string) ?? "",
       role: payload.role as Role,
+      iat: payload.iat ?? 0,
     };
   } catch {
     return null;

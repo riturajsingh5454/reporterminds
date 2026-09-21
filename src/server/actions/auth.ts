@@ -95,6 +95,11 @@ export async function resetPasswordAction(formData: FormData): Promise<AuthActio
     return { success: false, error: "This reset link is invalid or has expired." };
   }
 
+  const owner = await prisma.user.findUnique({ where: { id: resetToken.userId }, select: { isActive: true } });
+  if (!owner?.isActive) {
+    return { success: false, error: "This reset link is invalid or has expired." };
+  }
+
   const passwordHash = await bcrypt.hash(parsed.data.password, 10);
 
   await prisma.$transaction([

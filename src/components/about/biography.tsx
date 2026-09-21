@@ -1,7 +1,7 @@
 import { Container } from "@/components/shared/container";
 import { Reveal } from "@/components/shared/reveal";
 
-export function Biography({ tagline }: { tagline?: string | null }) {
+export function Biography() {
   return (
     <section className="py-20">
       <Container className="max-w-3xl">
