@@ -47,7 +47,6 @@ export default async function VideoDetailPage({ params }: { params: Promise<{ vi
 
             <h1 className="font-display mt-8 text-balance text-3xl sm:text-4xl">{video.title}</h1>
             <div className="text-muted-foreground mt-3 flex items-center gap-3 text-sm">
-              <span>{video.viewCount.toLocaleString()} views</span>
               <span>{new Date(video.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</span>
               {video.playlist ? <span>{video.playlist.title}</span> : null}
             </div>

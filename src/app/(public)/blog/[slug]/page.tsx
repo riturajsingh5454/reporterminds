@@ -86,7 +86,6 @@ export default async function ArticleDetailPage({ params }: { params: Promise<{ 
             <div className="text-muted-foreground mt-4 flex items-center gap-3 text-sm">
               {article.author?.name ? <span>{article.author.name}</span> : null}
               {date ? <span>{date}</span> : null}
-              <span>{article.readTimeMins} min read</span>
             </div>
           </Reveal>
 

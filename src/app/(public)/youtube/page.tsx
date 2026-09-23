@@ -11,13 +11,12 @@ export const metadata: Metadata = { title: "YouTube Hub" };
 export const revalidate = 300;
 
 export default async function YoutubePage() {
-  const [videos, playlists, totalViews] = await Promise.all([
+  const [videos, playlists] = await Promise.all([
     safeQuery(() => prisma.video.findMany({ orderBy: { publishedAt: "desc" } }), []),
     safeQuery(
       () => prisma.playlist.findMany({ include: { videos: { take: 1 } }, orderBy: { createdAt: "desc" } }),
       [],
     ),
-    safeQuery(() => prisma.video.aggregate({ _sum: { viewCount: true } }), { _sum: { viewCount: 0 } }),
   ]);
 
 
@@ -48,7 +47,7 @@ export default async function YoutubePage() {
           </Button>
         </div>
 
-        <div className="mt-10 grid grid-cols-3 gap-6 rounded-xl border border-border/60 bg-secondary/30 p-6 sm:max-w-md">
+        <div className="mt-10 grid grid-cols-2 gap-6 rounded-xl border border-border/60 bg-secondary/30 p-6 sm:max-w-xs">
           <div className="text-center">
             <AnimatedCounter value={videos.length} className="font-display text-2xl" />
             <p className="text-muted-foreground mt-1 text-xs uppercase">Videos</p>
@@ -56,10 +55,6 @@ export default async function YoutubePage() {
           <div className="text-center">
             <AnimatedCounter value={playlists.length} className="font-display text-2xl" />
             <p className="text-muted-foreground mt-1 text-xs uppercase">Playlists</p>
-          </div>
-          <div className="text-center">
-            <AnimatedCounter value={totalViews._sum.viewCount ?? 0} className="font-display text-2xl" />
-            <p className="text-muted-foreground mt-1 text-xs uppercase">Total Views</p>
           </div>
         </div>
 

@@ -7,7 +7,6 @@ export type VideoCardData = {
   title: string;
   thumbnail: string;
   durationSec?: number | null;
-  viewCount: number;
 };
 
 function formatDuration(seconds?: number | null) {
@@ -15,12 +14,6 @@ function formatDuration(seconds?: number | null) {
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
   return `${m}:${s.toString().padStart(2, "0")}`;
-}
-
-function formatViews(count: number) {
-  if (count >= 1_000_000) return `${(count / 1_000_000).toFixed(1)}M views`;
-  if (count >= 1_000) return `${(count / 1_000).toFixed(1)}K views`;
-  return `${count} views`;
 }
 
 export function VideoCard({ video }: { video: VideoCardData }) {
@@ -47,7 +40,6 @@ export function VideoCard({ video }: { video: VideoCardData }) {
         ) : null}
       </div>
       <h3 className="mt-3 line-clamp-2 text-sm font-medium leading-snug">{video.title}</h3>
-      <p className="text-muted-foreground mt-1 text-xs">{formatViews(video.viewCount)}</p>
     </Link>
   );
 }

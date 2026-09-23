@@ -8,7 +8,6 @@ export type ArticleCardData = {
   excerpt: string;
   coverImage: string;
   publishedAt?: Date | string | null;
-  readTimeMins: number;
   category?: { name: string; slug: string } | null;
 };
 
@@ -41,10 +40,7 @@ export function ArticleCard({ article, featured = false }: { article: ArticleCar
         ) : null}
         <h3 className={`font-display leading-snug ${featured ? "text-2xl" : "text-lg"}`}>{article.title}</h3>
         <p className="text-muted-foreground mt-2 line-clamp-2 text-sm leading-relaxed">{article.excerpt}</p>
-        <div className="text-muted-foreground mt-3 flex items-center gap-3 text-xs">
-          {date ? <span>{date}</span> : null}
-          <span>{article.readTimeMins} min read</span>
-        </div>
+        {date ? <div className="text-muted-foreground mt-3 flex items-center gap-3 text-xs">{date}</div> : null}
       </div>
     </Link>
   );
